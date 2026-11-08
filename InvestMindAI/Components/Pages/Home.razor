@@ -1,0 +1,688 @@
+﻿@page "/"
+
+<PageTitle>InvestMind AI | Panel inwestora</PageTitle>
+
+<div class="dashboard">
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon">IM</div>
+            <div>
+                <h1>InvestMind <span>AI</span></h1>
+                <p>YOUR FINANCIAL INTELLIGENCE</p>
+            </div>
+        </div>
+        <div class="profile">
+            <span class="status-dot"></span>
+            Tryb demonstracyjny
+        </div>
+    </header>
+
+    <section class="welcome">
+        <div>
+            <p class="eyebrow">TWÓJ CENTRUM DOWODZENIA</p>
+            <h2>Witaj w swoim świecie finansów.</h2>
+            <p>Śledź swoje cele, kontroluj budżet i rozwijaj wiedzę inwestycyjną.</p>
+        </div>
+        <div class="date-card">
+            <span>TWÓJ PLAN</span>
+            <strong>Buduj przyszłość</strong>
+            <small>Jeden krok na raz.</small>
+        </div>
+    </section>
+
+    <section class="stats">
+        <article class="stat-card">
+            <p>Całkowity majątek</p>
+            <h3>25 480,00 zł</h3>
+            <span class="muted">Przykładowe dane</span>
+        </article>
+        <article class="stat-card">
+            <p>Portfel inwestycyjny</p>
+            <h3>12 650,00 zł</h3>
+            <span class="positive">+4,8% w tym miesiącu</span>
+        </article>
+        <article class="stat-card">
+            <p>Wydatki w tym miesiącu</p>
+            <h3>2 140,00 zł</h3>
+            <span class="muted">Przykładowe dane</span>
+        </article>
+    </section>
+
+    <section class="content-grid">
+        <article class="panel portfolio">
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">INWESTYCJE</p>
+                    <h3>Twój portfel</h3>
+                </div>
+                <span class="tag">DEMO</span>
+            </div>
+
+            <div class="portfolio-total">
+                <span>Wartość portfela</span>
+                <strong>12 650,00 zł</strong>
+                <span class="positive">↗ +580,00 zł</span>
+            </div>
+
+            <div class="asset-row">
+                <div class="asset-icon stock">S</div>
+                <div class="asset-name">
+                    <strong>Akcje</strong>
+                    <small>Przykładowa pozycja</small>
+                </div>
+                <strong>5 200 zł</strong>
+            </div>
+            <div class="asset-row">
+                <div class="asset-icon etf">E</div>
+                <div class="asset-name">
+                    <strong>ETF-y</strong>
+                    <small>Przykładowa pozycja</small>
+                </div>
+                <strong>4 950 zł</strong>
+            </div>
+            <div class="asset-row">
+                <div class="asset-icon cash">Z</div>
+                <div class="asset-name">
+                    <strong>Gotówka</strong>
+                    <small>Środki niezaangażowane</small>
+                </div>
+                <strong>2 500 zł</strong>
+            </div>
+        </article>
+
+        <article class="panel allocation-panel">
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">STRUKTURA AKTYWÓW</p>
+                    <h3>Alokacja portfela</h3>
+                </div>
+                <span class="tag">DEMO</span>
+            </div>
+
+            <div class="allocation-content">
+                <div class="donut-chart" role="img"
+                     aria-label="Struktura portfela: akcje 41,1 procent, ETF-y 39,1 procent, gotówka 19,8 procent">
+                    <div class="donut-center">
+                        <span>WARTOŚĆ PORTFELA</span>
+                        <strong>12 650 zł</strong>
+                    </div>
+                </div>
+
+                <div class="allocation-legend">
+                    <div class="legend-item">
+                        <span class="legend-label">
+                            <span class="legend-dot stocks-dot"></span>
+                            Akcje
+                        </span>
+                        <span class="legend-value">
+                            <strong>5 200 zł</strong>
+                            <small>41,1%</small>
+                        </span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">
+                            <span class="legend-dot etf-dot"></span>
+                            ETF-y
+                        </span>
+                        <span class="legend-value">
+                            <strong>4 950 zł</strong>
+                            <small>39,1%</small>
+                        </span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-label">
+                            <span class="legend-dot cash-dot"></span>
+                            Gotówka
+                        </span>
+                        <span class="legend-value">
+                            <strong>2 500 zł</strong>
+                            <small>19,8%</small>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <p class="allocation-note">Udziały obliczone na podstawie przykładowych wartości aktywów.</p>
+        </article>
+
+        <article class="panel budget">
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">FINANSE OSOBISTE</p>
+                    <h3>Budżet miesięczny</h3>
+                </div>
+                <span class="tag">DEMO</span>
+            </div>
+
+            <div class="budget-number">
+                <strong>2 140 zł</strong>
+                <span>z 4 000 zł zaplanowanych wydatków</span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="budget-legend">
+                <span>Wykorzystano 53,5%</span>
+                <strong>1 860 zł pozostało</strong>
+            </div>
+
+            <div class="insight">
+                <span class="insight-icon">✦</span>
+                <div>
+                    <strong>Mały krok, duży cel</strong>
+                    <p>Regularne monitorowanie wydatków pomaga lepiej planować oszczędności.</p>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    <footer>
+        <span>InvestMind AI</span>
+        <span>Dane demonstracyjne · To nie są notowania na żywo ani porada inwestycyjna.</span>
+    </footer>
+</div>
+
+<style>
+
+    .dashboard {
+        --bg: #171C19;
+        --panel: #202923;
+        --border: #35443A;
+        --text: #F2EFE7;
+        --muted: #A8B0A6;
+        --green: #A9BDAA;
+        min-height: 100vh;
+        padding: 32px clamp(18px, 5vw, 64px);
+        background: var(--bg);
+        color: var(--text);
+        font-family: Inter, "Segoe UI", sans-serif;
+    }
+
+    .topbar, .brand, .profile, .panel-heading, .asset-row,
+    .budget-legend, footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .brand {
+        justify-content: flex-start;
+    }
+
+    .brand-icon {
+        display: grid;
+        place-items: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 15px;
+        color: #171C19;
+        font-weight: 900;
+        background: #C5AD7B;
+    }
+
+    .brand h1 {
+        font-size: 21px;
+        margin: 0;
+        letter-spacing: -0.7px;
+    }
+
+        .brand h1 span {
+            color: var(--green);
+        }
+
+    .brand p, .eyebrow {
+        font-size: 10px;
+        letter-spacing: 1.7px;
+        color: var(--muted);
+        margin: 5px 0 0;
+    }
+
+    .profile {
+        justify-content: flex-start;
+        font-size: 12px;
+        color: #c4cee0;
+        border: 1px solid var(--border);
+        border-radius: 30px;
+        padding: 10px 14px;
+    }
+
+    .status-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--green);
+        border-radius: 50%;
+    }
+
+    .welcome {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        margin: 56px 0 30px;
+    }
+
+        .welcome h2 {
+            font-size: clamp(26px, 4vw, 39px);
+            line-height: 1.15;
+            letter-spacing: -1.5px;
+            margin: 14px 0;
+            max-width: 620px;
+        }
+
+        .welcome > div > p:last-child {
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+    .date-card {
+        min-width: 190px;
+        padding: 20px;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        background: linear-gradient(145deg, #263B30, #202923);
+    }
+
+        .date-card span, .date-card small {
+            display: block;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .date-card strong {
+            display: block;
+            margin: 10px 0;
+            font-size: 15px;
+        }
+
+    .stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .stat-card, .panel {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+    }
+
+    .stat-card {
+        padding: 22px;
+    }
+
+        .stat-card p {
+            margin: 0;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .stat-card h3 {
+            font-size: clamp(20px, 2.5vw, 28px);
+            margin: 15px 0 10px;
+            letter-spacing: -0.8px;
+        }
+
+    .muted {
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .positive {
+        color: var(--green);
+        font-size: 12px;
+    }
+
+    .content-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 20px;
+    }
+    .budget {
+     grid-column: auto;
+    }
+
+    .budget {
+        grid-column: auto;
+    }
+
+    .panel {
+        padding: 24px;
+        min-width: 0;
+    }
+
+    .panel-heading {
+        margin-bottom: 24px;
+    }
+
+        .panel-heading h3 {
+            font-size: 19px;
+            margin: 8px 0 0;
+        }
+
+    .tag {
+        font-size: 9px;
+        color: var(--green);
+        letter-spacing: 1px;
+        border: 1px solid #2c5b53;
+        border-radius: 6px;
+        padding: 6px 8px;
+    }
+
+    .portfolio-total {
+        padding: 18px 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+        .portfolio-total span {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .portfolio-total strong {
+            display: inline-block;
+            font-size: 27px;
+            margin-right: 12px;
+        }
+
+    .asset-row {
+        padding: 17px 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+        .asset-row:last-child {
+            border-bottom: 0;
+            padding-bottom: 0;
+        }
+
+    .asset-icon {
+        display: grid;
+        place-items: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        font-weight: 700;
+    }
+
+    .stock {
+        background: #2A343F;
+        color: #C5D3DF;
+    }
+
+    .etf {
+        background: #29392F;
+        color: #B4C9B6;
+    }
+
+    .cash {
+        background: #3B352B;
+        color: #D5C39D;
+    }
+
+    .asset-name {
+        flex: 1;
+    }
+
+        .asset-name strong, .asset-name small {
+            display: block;
+        }
+
+        .asset-name small {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+    .asset-row > strong {
+        font-size: 13px;
+    }
+
+    .allocation-content {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        gap: 24px;
+        min-height: 220px;
+    }
+
+    .donut-chart {
+        position: relative;
+        display: grid;
+        place-items: center;
+        flex: 0 0 190px;
+        width: 190px;
+        height: 190px;
+        border-radius: 50%;
+        background: conic-gradient( #8EA994 0% 41.1%, #C5AD7B 41.1% 80.2%, #7C8995 80.2% 100% );
+    }
+
+        .donut-chart::before {
+            content: "";
+            position: absolute;
+            width: 132px;
+            height: 132px;
+            border-radius: 50%;
+            background: var(--panel);
+        }
+
+    .donut-center {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        text-align: center;
+    }
+
+        .donut-center span {
+            color: var(--muted);
+            font-size: 8px;
+            letter-spacing: 1px;
+        }
+
+        .donut-center strong {
+            color: var(--text);
+            font-size: 17px;
+            white-space: nowrap;
+        }
+
+    .allocation-legend {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: 18px;
+        min-width: 0;
+    }
+
+    .legend-item,
+    .legend-label,
+    .legend-value {
+        display: flex;
+        align-items: center;
+    }
+
+    .legend-item {
+        justify-content: space-between;
+        gap: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border);
+    }
+
+        .legend-item:last-child {
+            padding-bottom: 0;
+            border-bottom: 0;
+        }
+
+    .legend-label {
+        gap: 9px;
+        color: var(--text);
+        font-size: 12px;
+    }
+
+    .legend-dot {
+        width: 9px;
+        height: 9px;
+        flex: 0 0 9px;
+        border-radius: 50%;
+    }
+
+    .stocks-dot {
+        background: #8EA994;
+    }
+
+    .etf-dot {
+        background: #C5AD7B;
+    }
+
+    .cash-dot {
+        background: #7C8995;
+    }
+
+    .legend-value {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 4px;
+        white-space: nowrap;
+    }
+
+        .legend-value strong {
+            color: var(--text);
+            font-size: 12px;
+        }
+
+        .legend-value small {
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+    .allocation-note {
+        margin: 18px 0 0;
+        color: var(--muted);
+        font-size: 10px;
+        line-height: 1.5;
+    }
+
+    .budget-number strong {
+        display: block;
+        font-size: 28px;
+        margin-bottom: 8px;
+    }
+
+    .budget-number span {
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .progress-track {
+        height: 9px;
+        border-radius: 10px;
+        background: #35443A;
+        margin: 22px 0 12px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        width: 53.5%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #8EA994, #A9BDAA);
+    }
+
+    .budget-legend {
+        font-size: 10px;
+        color: var(--muted);
+        flex-wrap: wrap;
+    }
+
+        .budget-legend strong {
+            color: var(--green);
+        }
+
+    .insight {
+        display: flex;
+        gap: 13px;
+        padding: 17px;
+        border: 1px solid #3A5143;
+        background: #222F27;
+        border-radius: 14px;
+        margin-top: 27px;
+    }
+
+    .insight-icon {
+        color: var(--green);
+        font-size: 22px;
+    }
+
+    .insight strong {
+        font-size: 12px;
+    }
+
+    .insight p {
+        font-size: 11px;
+        color: #a9bbca;
+        line-height: 1.6;
+        margin: 7px 0 0;
+    }
+
+    footer {
+        margin-top: 28px;
+        color: var(--muted);
+        font-size: 10px;
+        flex-wrap: wrap;
+    }
+
+        footer span:first-child {
+            color: #D8D2C5;
+            font-weight: 700;
+        }
+
+    @@media (max-width: 800px) {
+        .welcome {
+            align-items: flex-start;
+            flex-direction: column;
+            margin-top: 38px;
+        }
+
+        .stats {
+            grid-template-columns: 1fr;
+        }
+
+        .content-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .budget {
+            grid-column: auto;
+        }
+
+        .allocation-content {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .donut-chart {
+            align-self: center;
+        }
+
+        .date-card {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .profile {
+            font-size: 0;
+            gap: 0;
+            padding: 12px;
+        }
+
+            .profile .status-dot {
+                width: 9px;
+                height: 9px;
+            }
+    }
+</style>
+
