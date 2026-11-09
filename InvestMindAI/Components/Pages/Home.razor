@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using System.Globalization
 
 <PageTitle>InvestMind AI | Panel inwestora</PageTitle>
 
@@ -33,17 +34,17 @@
     <section class="stats">
         <article class="stat-card">
             <p>Całkowity majątek</p>
-            <h3>25 480,00 zł</h3>
+            <h3>@FormatMoney(TotalWealth)</h3>
             <span class="muted">Przykładowe dane</span>
         </article>
         <article class="stat-card">
             <p>Portfel inwestycyjny</p>
-            <h3>12 650,00 zł</h3>
-            <span class="positive">+4,8% w tym miesiącu</span>
+            <h3>@FormatMoney(PortfolioTotal)</h3>
+            <span class="muted">Wartość na podstawie wpisanych kwot</span>
         </article>
         <article class="stat-card">
             <p>Wydatki w tym miesiącu</p>
-            <h3>2 140,00 zł</h3>
+            <h3>@FormatMoney(TotalExpenses)</h3>
             <span class="muted">Przykładowe dane</span>
         </article>
     </section>
@@ -60,8 +61,8 @@
 
             <div class="portfolio-total">
                 <span>Wartość portfela</span>
-                <strong>12 650,00 zł</strong>
-                <span class="positive">↗ +580,00 zł</span>
+                <strong>@FormatMoney(PortfolioTotal)</strong>
+                <span class="muted">Suma aktualnych pozycji</span>
             </div>
 
             <div class="asset-row">
@@ -70,7 +71,7 @@
                     <strong>Akcje</strong>
                     <small>Przykładowa pozycja</small>
                 </div>
-                <strong>5 200 zł</strong>
+                <input class="amount-input" aria-label="Wartość akcji" type="number" min="0" step="0.01" @bind="StocksValue" />
             </div>
             <div class="asset-row">
                 <div class="asset-icon etf">E</div>
@@ -78,7 +79,7 @@
                     <strong>ETF-y</strong>
                     <small>Przykładowa pozycja</small>
                 </div>
-                <strong>4 950 zł</strong>
+                <input class="amount-input" aria-label="Wartość ETF-ów" type="number" min="0" step="0.01" @bind="EtfValue" />
             </div>
             <div class="asset-row">
                 <div class="asset-icon cash">Z</div>
@@ -86,7 +87,11 @@
                     <strong>Gotówka</strong>
                     <small>Środki niezaangażowane</small>
                 </div>
-                <strong>2 500 zł</strong>
+                <input class="amount-input" aria-label="Wartość gotówki" type="number" min="0" step="0.01" @bind="CashValue" />
+            </div>
+            <div class="other-assets-editor">
+                <label for="otherAssets">Pozostałe środki poza portfelem</label>
+                <input id="otherAssets" class="amount-input" type="number" min="0" step="0.01" @bind="OtherAssetsValue" />
             </div>
         </article>
 
@@ -101,10 +106,11 @@
 
             <div class="allocation-content">
                 <div class="donut-chart" role="img"
-                     aria-label="Struktura portfela: akcje 41,1 procent, ETF-y 39,1 procent, gotówka 19,8 procent">
+                     aria-label="@AllocationDescription"
+                     style="@AllocationChartStyle">
                     <div class="donut-center">
                         <span>WARTOŚĆ PORTFELA</span>
-                        <strong>12 650 zł</strong>
+                        <strong>@FormatMoney(PortfolioTotal)</strong>
                     </div>
                 </div>
 
@@ -115,8 +121,8 @@
                             Akcje
                         </span>
                         <span class="legend-value">
-                            <strong>5 200 zł</strong>
-                            <small>41,1%</small>
+                            <strong>@FormatMoney(StocksValue)</strong>
+                            <small>@FormatPercent(StocksShare)</small>
                         </span>
                     </div>
                     <div class="legend-item">
@@ -125,8 +131,8 @@
                             ETF-y
                         </span>
                         <span class="legend-value">
-                            <strong>4 950 zł</strong>
-                            <small>39,1%</small>
+                            <strong>@FormatMoney(EtfValue)</strong>
+                            <small>@FormatPercent(EtfShare)</small>
                         </span>
                     </div>
                     <div class="legend-item">
@@ -135,14 +141,14 @@
                             Gotówka
                         </span>
                         <span class="legend-value">
-                            <strong>2 500 zł</strong>
-                            <small>19,8%</small>
+                            <strong>@FormatMoney(CashValue)</strong>
+                            <small>@FormatPercent(CashShare)</small>
                         </span>
                     </div>
                 </div>
             </div>
 
-            <p class="allocation-note">Udziały obliczone na podstawie przykładowych wartości aktywów.</p>
+            <p class="allocation-note">Udziały i wykres są przeliczane automatycznie na podstawie wartości wpisanych w portfelu.</p>
         </article>
 
         <article class="panel budget">
@@ -155,15 +161,44 @@
             </div>
 
             <div class="budget-number">
-                <strong>2 140 zł</strong>
-                <span>z 4 000 zł zaplanowanych wydatków</span>
+                <strong>@FormatMoney(TotalExpenses)</strong>
+                <span>z <input class="budget-input" aria-label="Planowany budżet miesięczny" type="number" min="0" step="0.01" @bind="MonthlyBudget" /> zaplanowanych wydatków</span>
             </div>
             <div class="progress-track">
-                <div class="progress-fill"></div>
+                <div class="progress-fill" style="@BudgetProgressStyle"></div>
             </div>
             <div class="budget-legend">
-                <span>Wykorzystano 53,5%</span>
-                <strong>1 860 zł pozostało</strong>
+                <span>Wykorzystano @FormatPercent(BudgetProgress)</span>
+                <strong>@FormatMoney(BudgetRemaining) pozostało</strong>
+            </div>
+
+            <div class="expense-entry">
+                <h4>Dodaj wydatek</h4>
+                <div class="expense-fields">
+                    <input class="expense-description" aria-label="Opis wydatku" placeholder="Np. Zakupy spożywcze" @bind="NewExpenseDescription" />
+                    <input class="expense-amount" aria-label="Kwota wydatku" type="number" min="0.01" step="0.01" placeholder="Kwota" @bind="NewExpenseAmount" />
+                    <button type="button" class="add-expense-button" @onclick="AddExpense">Dodaj</button>
+                </div>
+                @if (!string.IsNullOrWhiteSpace(ExpenseError))
+                {
+                    <p class="validation-message">@ExpenseError</p>
+                }
+            </div>
+
+            <div class="expense-list">
+                <h4>Wydatki w tym miesiącu</h4>
+                @foreach (var expense in Expenses)
+                {
+                    <div class="expense-row" @key="expense.Id">
+                        <span>@expense.Description</span>
+                        <strong>@FormatMoney(expense.Amount)</strong>
+                        <button type="button" class="remove-expense-button" title="Usuń wydatek" aria-label="Usuń wydatek: @expense.Description" @onclick="() => RemoveExpense(expense.Id)">Usuń</button>
+                    </div>
+                }
+                @if (Expenses.Count == 0)
+                {
+                    <p class="empty-expenses">Nie dodano jeszcze żadnych wydatków.</p>
+                }
             </div>
 
             <div class="insight">
@@ -339,12 +374,116 @@
         gap: 16px;
         margin-top: 20px;
     }
+
     .budget {
-     grid-column: auto;
+        grid-column: auto;
     }
 
     .budget {
         grid-column: auto;
+    }
+
+    .amount-input, .budget-input, .expense-description, .expense-amount {
+        color: var(--text);
+        background: #171F1A;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 9px 10px;
+        font: inherit;
+        min-width: 0;
+    }
+
+    .amount-input {
+        width: 125px;
+        text-align: right;
+    }
+
+    .budget-input {
+        width: 105px;
+        margin: 0 4px;
+        text-align: right;
+    }
+
+    .other-assets-editor {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding-top: 16px;
+        margin-top: 12px;
+        border-top: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+    .expense-entry, .expense-list {
+        margin-top: 22px;
+        padding-top: 18px;
+        border-top: 1px solid var(--border);
+    }
+
+        .expense-entry h4, .expense-list h4 {
+            margin: 0 0 12px;
+            font-size: 13px;
+            color: var(--text);
+        }
+
+    .expense-fields {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 105px auto;
+        gap: 8px;
+    }
+
+    .expense-description, .expense-amount {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .add-expense-button {
+        border: 0;
+        border-radius: 8px;
+        padding: 0 14px;
+        color: #171C19;
+        background: #C5AD7B;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .expense-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid var(--border);
+        color: var(--muted);
+        font-size: 12px;
+    }
+
+        .expense-row strong {
+            color: var(--text);
+            white-space: nowrap;
+        }
+
+    .remove-expense-button {
+        color: #D7A7A0;
+        background: transparent;
+        border: 1px solid #62433F;
+        border-radius: 6px;
+        padding: 5px 8px;
+        cursor: pointer;
+        font-size: 10px;
+    }
+
+    .validation-message {
+        color: #E3A49A;
+        font-size: 11px;
+        margin: 8px 0 0;
+    }
+
+    .empty-expenses {
+        color: var(--muted);
+        font-size: 12px;
     }
 
     .panel {
@@ -664,6 +803,18 @@
             align-items: stretch;
         }
 
+        .expense-fields {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .expense-description {
+            grid-column: 1 / -1;
+        }
+
+        .add-expense-button {
+            min-height: 40px;
+        }
+
         .donut-chart {
             align-self: center;
         }
@@ -686,3 +837,130 @@
     }
 </style>
 
+
+
+@code {
+    private static readonly CultureInfo PolishCulture = CultureInfo.GetCultureInfo("pl-PL");
+
+    private decimal _stocksValue = 5200m;
+    private decimal _etfValue = 4950m;
+    private decimal _cashValue = 2500m;
+    private decimal _otherAssetsValue = 12830m;
+    private decimal _monthlyBudget = 4000m;
+
+    private decimal StocksValue
+    {
+        get => _stocksValue;
+        set => _stocksValue = Math.Max(0, value);
+    }
+
+    private decimal EtfValue
+    {
+        get => _etfValue;
+        set => _etfValue = Math.Max(0, value);
+    }
+
+    private decimal CashValue
+    {
+        get => _cashValue;
+        set => _cashValue = Math.Max(0, value);
+    }
+
+    private decimal OtherAssetsValue
+    {
+        get => _otherAssetsValue;
+        set => _otherAssetsValue = Math.Max(0, value);
+    }
+
+    private decimal MonthlyBudget
+    {
+        get => _monthlyBudget;
+        set => _monthlyBudget = Math.Max(0, value);
+    }
+
+    private string NewExpenseDescription { get; set; } = string.Empty;
+    private decimal NewExpenseAmount { get; set; }
+    private string ExpenseError { get; set; } = string.Empty;
+
+    private List<ExpenseItem> Expenses { get; } = new()
+    {
+        new ExpenseItem(1, "Czynsz i rachunki", 1200m),
+        new ExpenseItem(2, "Zakupy spożywcze", 540m),
+        new ExpenseItem(3, "Transport", 180m),
+        new ExpenseItem(4, "Subskrypcje", 220m)
+    };
+
+    private decimal PortfolioTotal => StocksValue + EtfValue + CashValue;
+    private decimal TotalWealth => PortfolioTotal + OtherAssetsValue;
+    private decimal TotalExpenses => Expenses.Sum(expense => expense.Amount);
+    private decimal BudgetRemaining => MonthlyBudget - TotalExpenses;
+    private decimal BudgetProgress => MonthlyBudget <= 0
+        ? 0
+        : Math.Clamp(TotalExpenses / MonthlyBudget * 100m, 0m, 100m);
+
+    private decimal StocksShare => PortfolioTotal <= 0 ? 0 : StocksValue / PortfolioTotal * 100m;
+    private decimal EtfShare => PortfolioTotal <= 0 ? 0 : EtfValue / PortfolioTotal * 100m;
+    private decimal CashShare => PortfolioTotal <= 0 ? 0 : CashValue / PortfolioTotal * 100m;
+
+    private string BudgetProgressStyle =>
+        $"width: {BudgetProgress.ToString("0.0", CultureInfo.InvariantCulture)}%;";
+
+    private string AllocationChartStyle
+    {
+        get
+        {
+            if (PortfolioTotal <= 0)
+            {
+                return "background: #35443A;";
+            }
+
+            var stocksEnd = StocksShare;
+            var etfEnd = StocksShare + EtfShare;
+
+            return $"background: conic-gradient(#8EA994 0% {stocksEnd.ToString("0.####", CultureInfo.InvariantCulture)}%, #C5AD7B {stocksEnd.ToString("0.####", CultureInfo.InvariantCulture)}% {etfEnd.ToString("0.####", CultureInfo.InvariantCulture)}%, #7C8995 {etfEnd.ToString("0.####", CultureInfo.InvariantCulture)}% 100%);";
+        }
+    }
+
+    private string AllocationDescription =>
+        $"Struktura portfela: akcje {FormatPercent(StocksShare)}, ETF-y {FormatPercent(EtfShare)}, gotówka {FormatPercent(CashShare)}.";
+
+    private static string FormatMoney(decimal value) =>
+        value.ToString("N2", PolishCulture) + " zł";
+
+    private static string FormatPercent(decimal value) =>
+        value.ToString("0.0", PolishCulture) + "%";
+
+    private void AddExpense()
+    {
+        ExpenseError = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(NewExpenseDescription))
+        {
+            ExpenseError = "Wpisz opis wydatku.";
+            return;
+        }
+
+        if (NewExpenseAmount <= 0)
+        {
+            ExpenseError = "Kwota wydatku musi być większa od zera.";
+            return;
+        }
+
+        var nextId = Expenses.Count == 0 ? 1 : Expenses.Max(expense => expense.Id) + 1;
+        Expenses.Add(new ExpenseItem(nextId, NewExpenseDescription.Trim(), NewExpenseAmount));
+
+        NewExpenseDescription = string.Empty;
+        NewExpenseAmount = 0;
+    }
+
+    private void RemoveExpense(int id)
+    {
+        var expense = Expenses.FirstOrDefault(item => item.Id == id);
+        if (expense is not null)
+        {
+            Expenses.Remove(expense);
+        }
+    }
+
+    private sealed record ExpenseItem(int Id, string Description, decimal Amount);
+}
