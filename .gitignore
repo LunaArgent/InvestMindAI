@@ -22,3 +22,8 @@ packages/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Local SQLite database
+*.db
+*.db-shm
+*.db-wal

@@ -1,4 +1,7 @@
+
 using InvestMindAI.Components;
+using InvestMindAI.Data;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -6,15 +9,22 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// Configure SQLite database.
+var databasePath = Path.Combine(builder.Environment.ContentRootPath, "investmind.db");
+var connectionString = $"Data Source={databasePath}";
+
+builder.Services.AddDbContextFactory<InvestMindDbContext>(options =>
+    options.UseSqlite(connectionString));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error", createScopeForErrors: true);
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
 

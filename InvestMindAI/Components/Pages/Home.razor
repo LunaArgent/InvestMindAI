@@ -1,5 +1,9 @@
 ﻿@page "/"
 @using System.Globalization
+@using InvestMindAI.Data
+@using InvestMindAI.Models
+@using Microsoft.EntityFrameworkCore
+@inject IDbContextFactory<InvestMindDbContext> DbFactory
 
 <PageTitle>InvestMind AI | Panel inwestora</PageTitle>
 
@@ -71,7 +75,7 @@
                     <strong>Akcje</strong>
                     <small>Przykładowa pozycja</small>
                 </div>
-                <input class="amount-input" aria-label="Wartość akcji" type="number" min="0" step="0.01" @bind="StocksValue" />
+                <input class="amount-input" aria-label="Wartość akcji" type="number" min="0" step="0.01" @bind="StocksValue" @bind:after="SaveSettingsAsync" />
             </div>
             <div class="asset-row">
                 <div class="asset-icon etf">E</div>
@@ -79,7 +83,7 @@
                     <strong>ETF-y</strong>
                     <small>Przykładowa pozycja</small>
                 </div>
-                <input class="amount-input" aria-label="Wartość ETF-ów" type="number" min="0" step="0.01" @bind="EtfValue" />
+                <input class="amount-input" aria-label="Wartość ETF-ów" type="number" min="0" step="0.01" @bind="EtfValue" @bind:after="SaveSettingsAsync" />
             </div>
             <div class="asset-row">
                 <div class="asset-icon cash">Z</div>
@@ -87,11 +91,11 @@
                     <strong>Gotówka</strong>
                     <small>Środki niezaangażowane</small>
                 </div>
-                <input class="amount-input" aria-label="Wartość gotówki" type="number" min="0" step="0.01" @bind="CashValue" />
+                <input class="amount-input" aria-label="Wartość gotówki" type="number" min="0" step="0.01" @bind="CashValue" @bind:after="SaveSettingsAsync" />
             </div>
             <div class="other-assets-editor">
                 <label for="otherAssets">Pozostałe środki poza portfelem</label>
-                <input id="otherAssets" class="amount-input" type="number" min="0" step="0.01" @bind="OtherAssetsValue" />
+                <input id="otherAssets" class="amount-input" type="number" min="0" step="0.01" @bind="OtherAssetsValue" @bind:after="SaveSettingsAsync" />
             </div>
         </article>
 
@@ -162,7 +166,7 @@
 
             <div class="budget-number">
                 <strong>@FormatMoney(TotalExpenses)</strong>
-                <span>z <input class="budget-input" aria-label="Planowany budżet miesięczny" type="number" min="0" step="0.01" @bind="MonthlyBudget" /> zaplanowanych wydatków</span>
+                <span>z <input class="budget-input" aria-label="Planowany budżet miesięczny" type="number" min="0" step="0.01" @bind="MonthlyBudget" @bind:after="SaveSettingsAsync" /> zaplanowanych wydatków</span>
             </div>
             <div class="progress-track">
                 <div class="progress-fill" style="@BudgetProgressStyle"></div>
@@ -841,12 +845,73 @@
 
 @code {
     private static readonly CultureInfo PolishCulture = CultureInfo.GetCultureInfo("pl-PL");
+    private CancellationTokenSource? _saveSettingsCancellation;
 
-    private decimal _stocksValue = 5200m;
-    private decimal _etfValue = 4950m;
-    private decimal _cashValue = 2500m;
-    private decimal _otherAssetsValue = 12830m;
-    private decimal _monthlyBudget = 4000m;
+    private async Task SaveSettingsAsync()
+    {
+        _saveSettingsCancellation?.Cancel();
+        _saveSettingsCancellation?.Dispose();
+
+        var cancellation = new CancellationTokenSource();
+        _saveSettingsCancellation = cancellation;
+
+        try
+        {
+            await Task.Delay(500, cancellation.Token);
+
+            await using var db = await DbFactory.CreateDbContextAsync();
+
+            var settings = await db.FinancialSettings
+                .FirstAsync(x => x.Id == 1, cancellation.Token);
+
+            settings.StocksValue = StocksValue;
+            settings.EtfValue = EtfValue;
+            settings.CashValue = CashValue;
+            settings.OtherAssetsValue = OtherAssetsValue;
+            settings.MonthlyBudget = MonthlyBudget;
+
+            await db.SaveChangesAsync(cancellation.Token);
+        }
+        catch (OperationCanceledException)
+        {
+            // Nowsza zmiana zastąpiła poprzedni zapis.
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await using var db = await DbFactory.CreateDbContextAsync();
+
+        var settings = await db.FinancialSettings
+            .FirstOrDefaultAsync(x => x.Id == 1);
+
+        if (settings is null)
+        {
+            settings = new FinancialSettings { Id = 1 };
+            db.FinancialSettings.Add(settings);
+            await db.SaveChangesAsync();
+        }
+
+        StocksValue = settings.StocksValue;
+        EtfValue = settings.EtfValue;
+        CashValue = settings.CashValue;
+        OtherAssetsValue = settings.OtherAssetsValue;
+        MonthlyBudget = settings.MonthlyBudget;
+
+        var today = DateTime.Today;
+        var monthStart = new DateTime(today.Year, today.Month, 1);
+        var nextMonthStart = monthStart.AddMonths(1);
+
+        Expenses = await db.Expenses
+            .Where(e => e.Date >= monthStart && e.Date < nextMonthStart)
+            .OrderByDescending(e => e.Date)
+            .ToListAsync();
+    }
+
+    private decimal _stocksValue = 0m;
+    private decimal _etfValue = 0m;
+    private decimal _cashValue = 0m;
+    private decimal _otherAssetsValue = 0m;
+    private decimal _monthlyBudget = 0m;
 
     private decimal StocksValue
     {
@@ -882,13 +947,7 @@
     private decimal NewExpenseAmount { get; set; }
     private string ExpenseError { get; set; } = string.Empty;
 
-    private List<ExpenseItem> Expenses { get; } = new()
-    {
-        new ExpenseItem(1, "Czynsz i rachunki", 1200m),
-        new ExpenseItem(2, "Zakupy spożywcze", 540m),
-        new ExpenseItem(3, "Transport", 180m),
-        new ExpenseItem(4, "Subskrypcje", 220m)
-    };
+    private List<Expense> Expenses = new();
 
     private decimal PortfolioTotal => StocksValue + EtfValue + CashValue;
     private decimal TotalWealth => PortfolioTotal + OtherAssetsValue;
@@ -930,7 +989,7 @@
     private static string FormatPercent(decimal value) =>
         value.ToString("0.0", PolishCulture) + "%";
 
-    private void AddExpense()
+    private async Task AddExpense()
     {
         ExpenseError = string.Empty;
 
@@ -946,21 +1005,38 @@
             return;
         }
 
-        var nextId = Expenses.Count == 0 ? 1 : Expenses.Max(expense => expense.Id) + 1;
-        Expenses.Add(new ExpenseItem(nextId, NewExpenseDescription.Trim(), NewExpenseAmount));
+        var expense = new Expense
+        {
+            Description = NewExpenseDescription.Trim(),
+            Amount = NewExpenseAmount,
+            Date = DateTime.Today
+        };
+
+        await using var db = await DbFactory.CreateDbContextAsync();
+
+        db.Expenses.Add(expense);
+        await db.SaveChangesAsync();
+
+        Expenses.Add(expense);
 
         NewExpenseDescription = string.Empty;
         NewExpenseAmount = 0;
     }
 
-    private void RemoveExpense(int id)
+    private async Task RemoveExpense(int id)
     {
-        var expense = Expenses.FirstOrDefault(item => item.Id == id);
+        await using var db = await DbFactory.CreateDbContextAsync();
+
+        var expense = await db.Expenses.FindAsync(id);
+
         if (expense is not null)
         {
-            Expenses.Remove(expense);
+            db.Expenses.Remove(expense);
+            await db.SaveChangesAsync();
+
+            Expenses.RemoveAll(item => item.Id == id);
         }
     }
 
-    private sealed record ExpenseItem(int Id, string Description, decimal Amount);
+
 }
